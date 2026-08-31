@@ -8,7 +8,7 @@ const resetButton = document.createElement('button');
 resetButton.classList.add('reset-button');
 resetButton.textContent = "Reset";
 resetButton.addEventListener('click', function () {
-    resetBoard();   
+    resetBoard();
 });
 options.appendChild(resetButton);
 
@@ -70,22 +70,76 @@ function validmove(initial, final) {
         console.log("valid pawn move");
         return 1;
     }
+    //rook logic
+    if ((boardState[initialRow][initialCol] == "r" || boardState[initialRow][initialCol] == "R") && (initialRow == finalRow || initialCol == finalCol) && boardState[finalRow][finalCol] == " ") {
+        if (validPathRook()) return 1;
+        else return 0;
+    }
+    //knight logic
+    if ((boardState[initialRow][initialCol] == "n" || boardState[initialRow][initialCol] == "N") && ((Math.abs(initialRow - finalRow) == 2 && Math.abs(initialCol - finalCol) == 1) || (Math.abs(initialRow - finalRow) == 1 && Math.abs(initialCol - finalCol) == 2)) && boardState[finalRow][finalCol] == " ") {
+        return 1;
+    }
+    //bishop logic
+    if ((boardState[initialRow][initialCol] == "b" || boardState[initialRow][initialCol] == "B") && (Math.abs(initialRow - finalRow) == Math.abs(initialCol - finalCol)) && boardState[finalRow][finalCol] == " ") {
+        if (validPathBishop()) return 1;
+        else return 0;
+    }
+    //queen logic
+    if ((boardState[initialRow][initialCol] == "q" || boardState[initialRow][initialCol] == "Q") && (Math.abs(initialRow - finalRow) == Math.abs(initialCol - finalCol) || initialRow == finalRow || initialCol == finalCol) && boardState[finalRow][finalCol] == " ") {
+        if (validPathRook() && validPathBishop()) return 1;
+        else return 0;
+    }
+    //king logic
+    if ((boardState[initialRow][initialCol] == "k" || boardState[initialRow][initialCol] == "K") && (Math.abs(initialRow - finalRow) <= 1 && Math.abs(initialCol - finalCol) <= 1) && boardState[finalRow][finalCol] == " ") {
+        return 1;
+    }
     console.log("invalid move");
     return 0;
 }
 
+function validPathRook() {
+    if (initialCol == finalCol) {
+        for (let i = Math.min(initialRow, finalRow) + 1; i < Math.max(initialRow, finalRow); i++) {
+            if (boardState[i][initialCol] != " ") {
+                return 0;
+            }
+        }
+    }
+    else if (initialRow == finalRow) {
+        for (let j = Math.min(initialCol, finalCol) + 1; j < Math.max(initialCol, finalCol); j++) {
+            if (boardState[initialRow][j] != " ") {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
+function validPathBishop() {
+    var tempRow = Math.min(initialRow, finalRow)+1;
+    var tempCol = Math.min(initialCol, finalCol)+1;
+    while (tempRow != Math.max(initialRow, finalRow) && tempCol != Math.max(initialCol, finalCol)) {
+        if (boardState[tempRow][tempCol] != " ") {
+            return 0;
+        }
+        tempRow++;
+        tempCol++;
+    }
+    return 1;
+}
+
 function resetBoard() {
     boardState = [
-    ["r", "n", "b", "q", "k", "b", "n", "r"],
-    ["p", "p", "p", "p", "p", "p", "p", "p"],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    ["P", "P", "P", "P", "P", "P", "P", "P"],
-    ["R", "N", "B", "Q", "K", "B", "N", "R"]
-];
-renderBoard();
+        ["r", "n", "b", "q", "k", "b", "n", "r"],
+        ["p", "p", "p", "p", "p", "p", "p", "p"],
+        [" ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " "],
+        [" ", " ", " ", " ", " ", " ", " ", " "],
+        ["P", "P", "P", "P", "P", "P", "P", "P"],
+        ["R", "N", "B", "Q", "K", "B", "N", "R"]
+    ];
+    renderBoard();
 }
 
 function swapPieces(initial, final) {
@@ -94,9 +148,9 @@ function swapPieces(initial, final) {
     // const initialCol = parseInt(initial.charAt(1)) - 1;
     // const finalRow = parseInt(final.charAt(0)) - 1;
     // const finalCol = parseInt(final.charAt(1)) - 1;
-    const temp=boardState[initialRow][initialCol];
-    boardState[initialRow][initialCol]=boardState[finalRow][finalCol];
-    boardState[finalRow][finalCol]=temp;
+    const temp = boardState[initialRow][initialCol];
+    boardState[initialRow][initialCol] = boardState[finalRow][finalCol];
+    boardState[finalRow][finalCol] = temp;
 }
 
 //addiong pieces
@@ -144,9 +198,9 @@ function printBoardState() {
         console.log(boardState[i].join("|"));
     }
 }
-    
+
 printBoardState();
-renderBoard(); 
+renderBoard();
 
 function renderBoard() {
     for (let i = 1; i <= 8; i++) {
