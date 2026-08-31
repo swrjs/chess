@@ -1,5 +1,17 @@
 const board = document.getElementsByClassName('board')[0];
 var initial = 0, final = 0, initialmove = false;
+var initialRow, initialCol, finalRow, finalCol;
+
+//creating options
+const options = document.getElementsByClassName('options')[0];
+const resetButton = document.createElement('button');
+resetButton.classList.add('reset-button');
+resetButton.textContent = "Reset";
+resetButton.addEventListener('click', function () {
+    resetBoard();   
+});
+options.appendChild(resetButton);
+
 //creating the board
 for (let i = 1; i <= 8; i++) {
     for (let j = 1; j <= 8; j++) {
@@ -21,13 +33,29 @@ for (let i = 1; i <= 8; i++) {
                 final = `${i}${j}`;
                 console.log(`Clicked on final cell: ${final}`);
                 initialmove = false;
+
+                initialRow = Math.floor(initial / 10) - 1;  //zero indexed
+                initialCol = (initial % 10) - 1;
+                finalRow = Math.floor(final / 10) - 1;
+                finalCol = (final % 10) - 1;
+
+                // const initialRow = parseInt(initial.charAt(0)) - 1;
+                // const initialCol = parseInt(initial.charAt(1)) - 1;
+                // const finalRow = parseInt(final.charAt(0)) - 1;
+                // const finalCol = parseInt(final.charAt(1)) - 1;
+
                 if (validmove(initial, final)) { swapPieces(initial, final); }
+                printBoardState();
+                document.getElementById(initial).classList.remove('selected');
 
             } else {
                 initial = `${i}${j}`;
+                document.getElementById(initial).classList.add('selected');
+                // document.getElementById(initial).classList.remove('cell');
                 initialmove = true;
                 console.log(`Clicked on initial cell: ${initial}`);
             }
+            renderBoard();
         });
 
         board.appendChild(cell);
@@ -35,34 +63,40 @@ for (let i = 1; i <= 8; i++) {
     }
 }
 
+
 function validmove(initial, final) {
-return 1;
+    //pawn logic
+    if (((boardState[initialRow][initialCol] == "p" && ((initialRow - finalRow == -1) || ((initialRow == 1) && (initialRow - finalRow == -2)))) || (boardState[initialRow][initialCol] == "P" && ((initialRow - finalRow == 1) || (initialRow == 6) && (initialRow - finalRow == 2)))) && initialCol == finalCol && boardState[finalRow][finalCol] == " ") {
+        console.log("valid pawn move");
+        return 1;
+    }
+    console.log("invalid move");
+    return 0;
 }
 
-
+function resetBoard() {
+    boardState = [
+    ["r", "n", "b", "q", "k", "b", "n", "r"],
+    ["p", "p", "p", "p", "p", "p", "p", "p"],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    ["P", "P", "P", "P", "P", "P", "P", "P"],
+    ["R", "N", "B", "Q", "K", "B", "N", "R"]
+];
+renderBoard();
+}
 
 function swapPieces(initial, final) {
-    const initialCell = document.getElementById(initial);
-    const finalCell = document.getElementById(final); //copy the cell number
-
-    const initialPiece = initialCell.textContent;
-    const finalPiece = finalCell.textContent; //copy state values
-
-    initialCell.textContent = finalPiece;
-    finalCell.textContent = initialPiece; //copy display values
-
-    // Update the board state
-    const initialRow = initial / 10;
-    const initialCol = initial % 10;
-    const finalRow = final / 10;
-    const finalCol = final % 10;
+    // swap the board state values
     // const initialRow = parseInt(initial.charAt(0)) - 1;
     // const initialCol = parseInt(initial.charAt(1)) - 1;
     // const finalRow = parseInt(final.charAt(0)) - 1;
     // const finalCol = parseInt(final.charAt(1)) - 1;
-
-    boardState[initialRow - 1][initialCol - 1] = finalPiece;
-    boardState[finalRow - 1][finalCol - 1] = initialPiece;   //swap board state values
+    const temp=boardState[initialRow][initialCol];
+    boardState[initialRow][initialCol]=boardState[finalRow][finalCol];
+    boardState[finalRow][finalCol]=temp;
 }
 
 //addiong pieces
@@ -93,18 +127,26 @@ function swapPieces(initial, final) {
 // }
 
 //board logic array
-const boardState = [
+var boardState = [
     ["r", "n", "b", "q", "k", "b", "n", "r"],
     ["p", "p", "p", "p", "p", "p", "p", "p"],
-    ["", "", "", "", "", "", "", ""],
-    ["", "", "", "", "", "", "", ""],
-    ["", "", "", "", "", "", "", ""],
-    ["", "", "", "", "", "", "", ""],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
     ["P", "P", "P", "P", "P", "P", "P", "P"],
     ["R", "N", "B", "Q", "K", "B", "N", "R"]
 ];
 
-renderBoard();
+function printBoardState() {
+    console.log("Current Board State:");
+    for (let i = 0; i < 8; i++) {
+        console.log(boardState[i].join("|"));
+    }
+}
+    
+printBoardState();
+renderBoard(); 
 
 function renderBoard() {
     for (let i = 1; i <= 8; i++) {
@@ -147,7 +189,7 @@ function renderBoard() {
                 cell.textContent = "♔";
             }
             else {
-                cell.textContent = "";
+                cell.textContent = " ";
             }
         }
     }

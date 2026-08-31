@@ -4,12 +4,35 @@
     display: grid;
     grid-template-columns: repeat(8, 50px);
 }
-.selected {
-    border: 2px solid #00ff00;
+
+.options{
+    display:flex;
+    justify-content:center;
+}
+
+.reset-button {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    background-color: #fbedde;
+    color: #1f1511;
+    border-radius: 5px;
+    border: 1px solid #906d5b;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.heading{
+    font-size: 24px;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 .cell:hover {
-    border: 2px solid #ff0000;
+    
 }
 
 .cell {
@@ -29,4 +52,8 @@
 
 .white {
     background-color: #fbedde;
+}
+
+.selected{
+    background-color:rgb(173, 226, 123)
 }
