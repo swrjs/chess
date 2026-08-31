@@ -86,7 +86,7 @@ function validmove(initial, final) {
     }
     //queen logic
     if ((boardState[initialRow][initialCol] == "q" || boardState[initialRow][initialCol] == "Q") && (Math.abs(initialRow - finalRow) == Math.abs(initialCol - finalCol) || initialRow == finalRow || initialCol == finalCol) && boardState[finalRow][finalCol] == " ") {
-        if (validPathRook() && validPathBishop()) return 1;
+        if ((validPathRook()&&(initialRow == finalRow || initialCol == finalCol))|| (validPathBishop()&&(Math.abs(initialRow - finalRow) == Math.abs(initialCol - finalCol)))) return 1;
         else return 0;
     }
     //king logic
@@ -116,16 +116,20 @@ function validPathRook() {
 }
 
 function validPathBishop() {
-    var tempRow = Math.min(initialRow, finalRow)+1;
-    var tempCol = Math.min(initialCol, finalCol)+1;
-    while (tempRow != Math.max(initialRow, finalRow) && tempCol != Math.max(initialCol, finalCol)) {
-        if (boardState[tempRow][tempCol] != " ") {
-            return 0;
+    const rowStep = finalRow > initialRow ? 1 : -1;
+    const colStep = finalCol > initialCol ? 1 : -1;
+
+    let tempRow = initialRow + rowStep;
+    let tempCol = initialCol + colStep;
+
+    while (tempRow !== finalRow && tempCol !== finalCol) {
+        if (boardState[tempRow][tempCol] !== " ") {
+            return 0; 
         }
-        tempRow++;
-        tempCol++;
+        tempRow += rowStep;
+        tempCol += colStep;
     }
-    return 1;
+    return 1; 
 }
 
 function resetBoard() {
