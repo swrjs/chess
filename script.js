@@ -2,6 +2,7 @@ const board = document.getElementsByClassName('board')[0];
 var initial = 0, final = 0, initialmove = false;
 var initialRow, initialCol, finalRow, finalCol;
 var whitemove = true, blackmove = false;
+var flippedDrn = 1;
 //creating options
 const options = document.getElementsByClassName('options')[0];
 
@@ -109,12 +110,20 @@ function pieceElimination() {
     console.log(`Elimination check`);
     console.log(`Initial piece: ${boardState[initialRow][initialCol]}, Final piece: ${boardState[finalRow][finalCol]}`);
     if (boardState[initialRow][initialCol] >= 'A' && boardState[initialRow][initialCol] <= 'Z' && boardState[finalRow][finalCol] >= 'a' && boardState[finalRow][finalCol] <= 'z') {
-        console.log("White eliminates Black");
-        return 1;
+        if (boardState[initialRow][initialRow] != "p") {
+            console.log("White eliminates Black");
+            return 1;
+        }
+        // else if (boardState[initialRow][initialCol] == "p"&& (finalRow-initialRow==1&&(Math.abs(finalCol-initialCol)==1))){
+        //     return 1;            
+        // }
     }
     else if (boardState[initialRow][initialCol] >= 'a' && boardState[initialRow][initialCol] <= 'z' && boardState[finalRow][finalCol] >= 'A' && boardState[finalRow][finalCol] <= 'Z') {
-        console.log("Black eliminates White");
-        return 1;
+        if (boardState[finalRow][finalCol] != "P") {
+            console.log("Black eliminates White");
+            return 1;
+        }
+        //pawn side elimination logic
     }
     console.log("No elimination");
     return 0;
@@ -126,7 +135,7 @@ function alternateMove() {
 
 function validmove(initial, final) {
     //pawn logic
-    if (((boardState[initialRow][initialCol] == "p" && ((initialRow - finalRow == -1) || ((initialRow == 1) && (initialRow - finalRow == -2)))) || (boardState[initialRow][initialCol] == "P" && ((initialRow - finalRow == 1) || (initialRow == 6) && (initialRow - finalRow == 2)))) && initialCol == finalCol && (boardState[finalRow][finalCol] == " " || pieceElimination())) {
+    if (((boardState[initialRow][initialCol] == "p" && ((initialRow - finalRow == -1*flippedDrn) || ((initialRow == 1) && (initialRow - finalRow == -2)))) || (boardState[initialRow][initialCol] == "P" && ((initialRow - finalRow == 1*flippedDrn) || (initialRow == 6) && (initialRow - finalRow == 2)))) && initialCol == finalCol && (boardState[finalRow][finalCol] == " " || pieceElimination())) {
         console.log("valid pawn move");
         return 1;
     }
@@ -215,6 +224,7 @@ function flipBoard() {
         boardState[i].reverse();
     }
     boardState.reverse();
+    flippedDrn *= -1;
 }
 
 function movePiece(initial, final) {
