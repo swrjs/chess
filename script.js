@@ -49,7 +49,7 @@ for (let i = 1; i <= 8; i++) {
 
 
         cell.addEventListener('click', function () {
-           
+
             if (whitemove) {
                 console.log(`White's turn`);
             }
@@ -284,7 +284,7 @@ function printBoardState() {
 printBoardState();
 renderBoard();
 
-function updatePieceColors(){
+function updatePieceColors() {
 
 }
 
@@ -296,66 +296,79 @@ function renderBoard() {
                 cell.textContent = "♟";
                 const tempcell = document.getElementById(`${i}${j}`);
                 tempcell.classList.add('black-piece');
+                tempcell.classList.remove('white-piece');
             }
             else if (boardState[i - 1][j - 1] == "r") {
                 cell.textContent = "♜";
                 const tempcell = document.getElementById(`${i}${j}`);
                 tempcell.classList.add('black-piece')
+                tempcell.classList.remove('white-piece');
             }
             else if (boardState[i - 1][j - 1] == "n") {
                 cell.textContent = "♞";
                 const tempcell = document.getElementById(`${i}${j}`);
                 tempcell.classList.add('black-piece')
+                tempcell.classList.remove('white-piece');
             }
             else if (boardState[i - 1][j - 1] == "b") {
                 cell.textContent = "♝";
                 const tempcell = document.getElementById(`${i}${j}`);
                 tempcell.classList.add('black-piece')
+                tempcell.classList.remove('white-piece');
             }
             else if (boardState[i - 1][j - 1] == "q") {
                 cell.textContent = "♛";
                 const tempcell = document.getElementById(`${i}${j}`);
                 tempcell.classList.add('black-piece')
+                tempcell.classList.remove('white-piece');
             }
             else if (boardState[i - 1][j - 1] == "k") {
                 cell.textContent = "♚";
                 const tempcell = document.getElementById(`${i}${j}`);
                 tempcell.classList.add('black-piece')
-            }
-            else if (boardState[i - 1][j - 1] == "P") {
-                cell.textContent = "♟";
-                const tempcell = document.getElementById(`${i}${j}`);
-                tempcell.classList.add('white-piece')
+                tempcell.classList.remove('white-piece');
             }
             else if (boardState[i - 1][j - 1] == "p") {
                 cell.textContent = "♟";
                 const tempcell = document.getElementById(`${i}${j}`);
                 tempcell.classList.add('black-piece')
+                tempcell.classList.remove('white-piece');
+            }
+            else if (boardState[i - 1][j - 1] == "P") {
+                cell.textContent = "♟";
+                const tempcell = document.getElementById(`${i}${j}`);
+                tempcell.classList.add('white-piece')
+                tempcell.classList.remove('black-piece');
             }
             else if (boardState[i - 1][j - 1] == "R") {
                 cell.textContent = "♜";
                 const tempcell = document.getElementById(`${i}${j}`);
                 tempcell.classList.add('white-piece');
+                tempcell.classList.remove('black-piece');
             }
             else if (boardState[i - 1][j - 1] == "N") {
                 cell.textContent = "♞";
                 const tempcell = document.getElementById(`${i}${j}`);
                 tempcell.classList.add('white-piece');
+                tempcell.classList.remove('black-piece');
             }
             else if (boardState[i - 1][j - 1] == "B") {
                 cell.textContent = "♝";
                 const tempcell = document.getElementById(`${i}${j}`);
                 tempcell.classList.add('white-piece');
+                tempcell.classList.remove('black-piece');
             }
             else if (boardState[i - 1][j - 1] == "Q") {
                 cell.textContent = "♛";
                 const tempcell = document.getElementById(`${i}${j}`);
                 tempcell.classList.add('white-piece');
+                tempcell.classList.remove('black-piece');
             }
             else if (boardState[i - 1][j - 1] == "K") {
                 cell.textContent = "♚";
                 const tempcell = document.getElementById(`${i}${j}`);
                 tempcell.classList.add('white-piece');
+                tempcell.classList.remove('black-piece');
             }
             else {
                 cell.textContent = " ";
