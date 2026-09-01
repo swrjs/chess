@@ -44,7 +44,7 @@ for (let i = 1; i <= 8; i++) {
                 // const finalRow = parseInt(final.charAt(0)) - 1;
                 // const finalCol = parseInt(final.charAt(1)) - 1;
 
-                if (validmove(initial, final)) { swapPieces(initial, final); }
+                if (validmove(initial, final)) { movePiece(); }
                 printBoardState();
                 document.getElementById(initial).classList.remove('selected');
 
@@ -63,34 +63,48 @@ for (let i = 1; i <= 8; i++) {
     }
 }
 
+function pieceElimination() {
+    console.log(`Elimination check`);
+    console.log(`Initial piece: ${boardState[initialRow][initialCol]}, Final piece: ${boardState[finalRow][finalCol]}`);
+    if (boardState[initialRow][initialCol]>='A' && boardState[initialRow][initialCol]<='Z' && boardState[finalRow][finalCol]>='a' && boardState[finalRow][finalCol]<='z') {
+        console.log("White eliminates Black");
+        return 1;
+    }
+    else if (boardState[initialRow][initialCol]>='a' && boardState[initialRow][initialCol]<='z' && boardState[finalRow][finalCol]>='A' && boardState[finalRow][finalCol]<='Z') {
+        console.log("Black eliminates White");
+        return 1;
+    }
+    console.log("No elimination");
+    return 0;
+}
 
 function validmove(initial, final) {
     //pawn logic
-    if (((boardState[initialRow][initialCol] == "p" && ((initialRow - finalRow == -1) || ((initialRow == 1) && (initialRow - finalRow == -2)))) || (boardState[initialRow][initialCol] == "P" && ((initialRow - finalRow == 1) || (initialRow == 6) && (initialRow - finalRow == 2)))) && initialCol == finalCol && boardState[finalRow][finalCol] == " ") {
+    if (((boardState[initialRow][initialCol] == "p" && ((initialRow - finalRow == -1) || ((initialRow == 1) && (initialRow - finalRow == -2)))) || (boardState[initialRow][initialCol] == "P" && ((initialRow - finalRow == 1) || (initialRow == 6) && (initialRow - finalRow == 2)))) && initialCol == finalCol && (boardState[finalRow][finalCol] == " "|| pieceElimination())) {
         console.log("valid pawn move");
         return 1;
     }
     //rook logic
-    if ((boardState[initialRow][initialCol] == "r" || boardState[initialRow][initialCol] == "R") && (initialRow == finalRow || initialCol == finalCol) && boardState[finalRow][finalCol] == " ") {
+    if ((boardState[initialRow][initialCol] == "r" || boardState[initialRow][initialCol] == "R") && (initialRow == finalRow || initialCol == finalCol) && (boardState[finalRow][finalCol] == " " || pieceElimination())) {
         if (validPathRook()) return 1;
         else return 0;
     }
     //knight logic
-    if ((boardState[initialRow][initialCol] == "n" || boardState[initialRow][initialCol] == "N") && ((Math.abs(initialRow - finalRow) == 2 && Math.abs(initialCol - finalCol) == 1) || (Math.abs(initialRow - finalRow) == 1 && Math.abs(initialCol - finalCol) == 2)) && boardState[finalRow][finalCol] == " ") {
+    if ((boardState[initialRow][initialCol] == "n" || boardState[initialRow][initialCol] == "N") && ((Math.abs(initialRow - finalRow) == 2 && Math.abs(initialCol - finalCol) == 1) || (Math.abs(initialRow - finalRow) == 1 && Math.abs(initialCol - finalCol) == 2)) && (boardState[finalRow][finalCol] == " " || pieceElimination())) {
         return 1;
     }
     //bishop logic
-    if ((boardState[initialRow][initialCol] == "b" || boardState[initialRow][initialCol] == "B") && (Math.abs(initialRow - finalRow) == Math.abs(initialCol - finalCol)) && boardState[finalRow][finalCol] == " ") {
+    if ((boardState[initialRow][initialCol] == "b" || boardState[initialRow][initialCol] == "B") && (Math.abs(initialRow - finalRow) == Math.abs(initialCol - finalCol)) && (boardState[finalRow][finalCol] == " " || pieceElimination())) {
         if (validPathBishop()) return 1;
         else return 0;
     }
     //queen logic
-    if ((boardState[initialRow][initialCol] == "q" || boardState[initialRow][initialCol] == "Q") && (Math.abs(initialRow - finalRow) == Math.abs(initialCol - finalCol) || initialRow == finalRow || initialCol == finalCol) && boardState[finalRow][finalCol] == " ") {
+    if ((boardState[initialRow][initialCol] == "q" || boardState[initialRow][initialCol] == "Q") && (Math.abs(initialRow - finalRow) == Math.abs(initialCol - finalCol) || initialRow == finalRow || initialCol == finalCol) && (boardState[finalRow][finalCol] == " " || pieceElimination())) {
         if ((validPathRook()&&(initialRow == finalRow || initialCol == finalCol))|| (validPathBishop()&&(Math.abs(initialRow - finalRow) == Math.abs(initialCol - finalCol)))) return 1;
         else return 0;
     }
     //king logic
-    if ((boardState[initialRow][initialCol] == "k" || boardState[initialRow][initialCol] == "K") && (Math.abs(initialRow - finalRow) <= 1 && Math.abs(initialCol - finalCol) <= 1) && boardState[finalRow][finalCol] == " ") {
+    if ((boardState[initialRow][initialCol] == "k" || boardState[initialRow][initialCol] == "K") && (Math.abs(initialRow - finalRow) <= 1 && Math.abs(initialCol - finalCol) <= 1) && (boardState[finalRow][finalCol] == " " || pieceElimination())) {
         return 1;
     }
     console.log("invalid move");
@@ -144,6 +158,13 @@ function resetBoard() {
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
     ];
     renderBoard();
+}
+
+function movePiece(initial, final) {
+
+boardState[finalRow][finalCol] = boardState[initialRow][initialCol];
+boardState[initialRow][initialCol] = " ";
+
 }
 
 function swapPieces(initial, final) {
