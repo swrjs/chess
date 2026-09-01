@@ -8,11 +8,13 @@
 .options{
     display:flex;
     justify-content:center;
+    column-gap: 20px;
 }
 
-.reset-button {
+.reset-button,.flip-button {
     font-family: 'Courier New', Courier, monospace;
     font-weight: bold;
+    /* height: 35px; */
     background-color: #fbedde;
     color: #1f1511;
     border-radius: 5px;
@@ -23,6 +25,23 @@
     margin-top: 20px;
 }
 
+.reset-button:hover,.flip-button:hover {
+    background-color: rgb(108, 66, 30);
+    border-color: #fbedde;
+    color: #fbedde;
+    content:"Hello";
+}
+
+/* .reset-button:hover::after{
+    content:"⟳"
+} */
+
+.flip-button{
+    font-size: 30px;
+    padding: 2px 20px;
+    padding-bottom: 5px;
+}
+
 .heading{
     font-size: 24px;
     font-family: 'Courier New', Courier, monospace;
@@ -31,19 +50,22 @@
     margin-bottom: 10px;
 }
 
-.cell:hover {
-    
-}
+
 
 .cell {
     cursor: pointer;
     width: 50px;
     height: 50px;
-    border: #906d5b 1px solid ;
+    border: #ad8470 1px solid ;
     text-align: center;
     font-size: 30px;
     color: #1f1511;
     background-color: #fbedde;
+}
+
+.cell:hover {
+    border-color: #b5988a;
+    border-width: 2px;
 }
 
 .black {

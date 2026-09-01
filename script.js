@@ -4,13 +4,33 @@ var initialRow, initialCol, finalRow, finalCol;
 
 //creating options
 const options = document.getElementsByClassName('options')[0];
+
+//flip button
+const flipButton = document.createElement('button');
+flipButton.classList.add('flip-button');
+flipButton.textContent = "↕";
+flipButton.addEventListener('click', function () {
+    flipBoard();
+    renderBoard();
+});
+options.appendChild(flipButton);
+
+//reset button
 const resetButton = document.createElement('button');
 resetButton.classList.add('reset-button');
 resetButton.textContent = "Reset";
 resetButton.addEventListener('click', function () {
     resetBoard();
 });
+// resetButton.addEventListener('mouseenter', function () {
+//     resetButton.textContent="Reset⟳"
+// });
+// resetButton.addEventListener('mouseleave', function () {
+//     resetButton.textContent="Reset"
+// });
 options.appendChild(resetButton);
+
+
 
 //creating the board
 for (let i = 1; i <= 8; i++) {
@@ -45,7 +65,7 @@ for (let i = 1; i <= 8; i++) {
                 // const finalCol = parseInt(final.charAt(1)) - 1;
 
                 if (validmove(initial, final)) { movePiece(); }
-                printBoardState();
+                //printBoardState();
                 document.getElementById(initial).classList.remove('selected');
 
             } else {
@@ -115,6 +135,7 @@ function validPathRook() {
     if (initialCol == finalCol) {
         for (let i = Math.min(initialRow, finalRow) + 1; i < Math.max(initialRow, finalRow); i++) {
             if (boardState[i][initialCol] != " ") {
+                console.log(`Path blocked at ${i}, ${initialCol}`);
                 return 0;
             }
         }
@@ -122,6 +143,7 @@ function validPathRook() {
     else if (initialRow == finalRow) {
         for (let j = Math.min(initialCol, finalCol) + 1; j < Math.max(initialCol, finalCol); j++) {
             if (boardState[initialRow][j] != " ") {
+                console.log(`Path blocked at ${initialRow}, ${j}`);
                 return 0;
             }
         }
@@ -138,6 +160,7 @@ function validPathBishop() {
 
     while (tempRow !== finalRow && tempCol !== finalCol) {
         if (boardState[tempRow][tempCol] !== " ") {
+            console.log(`Path blocked at ${tempRow}, ${tempCol}`);
             return 0; 
         }
         tempRow += rowStep;
@@ -158,6 +181,14 @@ function resetBoard() {
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
     ];
     renderBoard();
+}
+
+function flipBoard() {
+console.log("Flipping the board");
+for(let i = 0; i < 8; i++) {
+    boardState[i].reverse();
+}
+boardState.reverse();
 }
 
 function movePiece(initial, final) {
