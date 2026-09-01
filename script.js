@@ -1,7 +1,7 @@
 const board = document.getElementsByClassName('board')[0];
 var initial = 0, final = 0, initialmove = false;
 var initialRow, initialCol, finalRow, finalCol;
-
+var whitemove = true, blackmove = false;
 //creating options
 const options = document.getElementsByClassName('options')[0];
 
@@ -49,33 +49,55 @@ for (let i = 1; i <= 8; i++) {
 
 
         cell.addEventListener('click', function () {
-            if (initialmove) {
-                final = `${i}${j}`;
-                console.log(`Clicked on final cell: ${final}`);
-                initialmove = false;
-
-                initialRow = Math.floor(initial / 10) - 1;  //zero indexed
-                initialCol = (initial % 10) - 1;
-                finalRow = Math.floor(final / 10) - 1;
-                finalCol = (final % 10) - 1;
-
-                // const initialRow = parseInt(initial.charAt(0)) - 1;
-                // const initialCol = parseInt(initial.charAt(1)) - 1;
-                // const finalRow = parseInt(final.charAt(0)) - 1;
-                // const finalCol = parseInt(final.charAt(1)) - 1;
-
-                if (validmove(initial, final)) { movePiece(); }
-                //printBoardState();
-                document.getElementById(initial).classList.remove('selected');
-
-            } else {
-                initial = `${i}${j}`;
-                document.getElementById(initial).classList.add('selected');
-                // document.getElementById(initial).classList.remove('cell');
-                initialmove = true;
-                console.log(`Clicked on initial cell: ${initial}`);
+           
+            if (whitemove) {
+                console.log(`White's turn`);
             }
-            renderBoard();
+            else {
+                console.log(`Black's turn`);
+            }
+
+
+
+            {
+                if (initialmove) {
+                    final = `${i}${j}`;
+                    console.log(`Clicked on final cell: ${final}`);
+                    initialmove = false;
+
+                    finalRow = Math.floor(final / 10) - 1;
+                    finalCol = (final % 10) - 1;
+
+                    // const initialRow = parseInt(initial.charAt(0)) - 1;
+                    // const initialCol = parseInt(initial.charAt(1)) - 1;
+                    // const finalRow = parseInt(final.charAt(0)) - 1;
+                    // const finalCol = parseInt(final.charAt(1)) - 1;
+
+                    if (validmove(initial, final)) {
+                        movePiece();
+                        whitemove = !whitemove;
+                        blackmove = !blackmove;
+                    }
+                    //printBoardState();
+                    document.getElementById(initial).classList.remove('selected');
+
+                } else {
+                    initial = `${i}${j}`;
+
+                    initialRow = Math.floor(initial / 10) - 1;  //zero indexed
+                    initialCol = (initial % 10) - 1;
+
+
+                    if (alternateMove()) {
+                        document.getElementById(initial).classList.add('selected');
+                        // document.getElementById(initial).classList.remove('cell');
+                        initialmove = true;
+                        console.log(`Clicked on initial cell: ${initial}`);
+                    }
+                }
+                renderBoard();
+
+            }
         });
 
         board.appendChild(cell);
@@ -86,11 +108,11 @@ for (let i = 1; i <= 8; i++) {
 function pieceElimination() {
     console.log(`Elimination check`);
     console.log(`Initial piece: ${boardState[initialRow][initialCol]}, Final piece: ${boardState[finalRow][finalCol]}`);
-    if (boardState[initialRow][initialCol]>='A' && boardState[initialRow][initialCol]<='Z' && boardState[finalRow][finalCol]>='a' && boardState[finalRow][finalCol]<='z') {
+    if (boardState[initialRow][initialCol] >= 'A' && boardState[initialRow][initialCol] <= 'Z' && boardState[finalRow][finalCol] >= 'a' && boardState[finalRow][finalCol] <= 'z') {
         console.log("White eliminates Black");
         return 1;
     }
-    else if (boardState[initialRow][initialCol]>='a' && boardState[initialRow][initialCol]<='z' && boardState[finalRow][finalCol]>='A' && boardState[finalRow][finalCol]<='Z') {
+    else if (boardState[initialRow][initialCol] >= 'a' && boardState[initialRow][initialCol] <= 'z' && boardState[finalRow][finalCol] >= 'A' && boardState[finalRow][finalCol] <= 'Z') {
         console.log("Black eliminates White");
         return 1;
     }
@@ -98,9 +120,13 @@ function pieceElimination() {
     return 0;
 }
 
+function alternateMove() {
+    return (whitemove && (boardState[initialRow][initialCol] >= 'A' && boardState[initialRow][initialCol] <= 'Z') || (blackmove && (boardState[initialRow][initialCol] >= 'a' && boardState[initialRow][initialCol] <= 'z')))
+}
+
 function validmove(initial, final) {
     //pawn logic
-    if (((boardState[initialRow][initialCol] == "p" && ((initialRow - finalRow == -1) || ((initialRow == 1) && (initialRow - finalRow == -2)))) || (boardState[initialRow][initialCol] == "P" && ((initialRow - finalRow == 1) || (initialRow == 6) && (initialRow - finalRow == 2)))) && initialCol == finalCol && (boardState[finalRow][finalCol] == " "|| pieceElimination())) {
+    if (((boardState[initialRow][initialCol] == "p" && ((initialRow - finalRow == -1) || ((initialRow == 1) && (initialRow - finalRow == -2)))) || (boardState[initialRow][initialCol] == "P" && ((initialRow - finalRow == 1) || (initialRow == 6) && (initialRow - finalRow == 2)))) && initialCol == finalCol && (boardState[finalRow][finalCol] == " " || pieceElimination())) {
         console.log("valid pawn move");
         return 1;
     }
@@ -120,7 +146,7 @@ function validmove(initial, final) {
     }
     //queen logic
     if ((boardState[initialRow][initialCol] == "q" || boardState[initialRow][initialCol] == "Q") && (Math.abs(initialRow - finalRow) == Math.abs(initialCol - finalCol) || initialRow == finalRow || initialCol == finalCol) && (boardState[finalRow][finalCol] == " " || pieceElimination())) {
-        if ((validPathRook()&&(initialRow == finalRow || initialCol == finalCol))|| (validPathBishop()&&(Math.abs(initialRow - finalRow) == Math.abs(initialCol - finalCol)))) return 1;
+        if ((validPathRook() && (initialRow == finalRow || initialCol == finalCol)) || (validPathBishop() && (Math.abs(initialRow - finalRow) == Math.abs(initialCol - finalCol)))) return 1;
         else return 0;
     }
     //king logic
@@ -161,12 +187,12 @@ function validPathBishop() {
     while (tempRow !== finalRow && tempCol !== finalCol) {
         if (boardState[tempRow][tempCol] !== " ") {
             console.log(`Path blocked at ${tempRow}, ${tempCol}`);
-            return 0; 
+            return 0;
         }
         tempRow += rowStep;
         tempCol += colStep;
     }
-    return 1; 
+    return 1;
 }
 
 function resetBoard() {
@@ -184,17 +210,17 @@ function resetBoard() {
 }
 
 function flipBoard() {
-console.log("Flipping the board");
-for(let i = 0; i < 8; i++) {
-    boardState[i].reverse();
-}
-boardState.reverse();
+    console.log("Flipping the board");
+    for (let i = 0; i < 8; i++) {
+        boardState[i].reverse();
+    }
+    boardState.reverse();
 }
 
 function movePiece(initial, final) {
 
-boardState[finalRow][finalCol] = boardState[initialRow][initialCol];
-boardState[initialRow][initialCol] = " ";
+    boardState[finalRow][finalCol] = boardState[initialRow][initialCol];
+    boardState[initialRow][initialCol] = " ";
 
 }
 
