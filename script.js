@@ -96,8 +96,9 @@ for (let i = 1; i <= 8; i++) {
                         console.log(`Clicked on initial cell: ${initial}`);
                     }
                 }
+                checkForPromotion();
                 renderBoard();
-
+                              
             }
         });
 
@@ -106,24 +107,51 @@ for (let i = 1; i <= 8; i++) {
     }
 }
 
+function checkForPromotion() {
+    for (let j = 0; j < 8; j++) {
+        if (flippedDrn == 1) {
+            if(boardState[0][j] == "P") {
+                boardState[0][j] = "Q";
+                console.log(`White pawn promoted at 0, ${j}`);
+            }
+            if(boardState[7][j] == "p") {
+                boardState[7][j] = "q";
+                console.log(`Black pawn promoted at 7, ${j}`);
+            }
+        }
+        else {
+            if(boardState[7][j] == "P") {
+                boardState[7][j] = "Q";
+                console.log(`White pawn promoted at 7, ${j}`);
+            }
+            if(boardState[0][j] == "p") {
+                boardState[0][j] = "q";
+                console.log(`Black pawn promoted at 0, ${j}`);
+            }
+        }
+    }   
+}
+
 function pieceElimination() {
     console.log(`Elimination check`);
     console.log(`Initial piece: ${boardState[initialRow][initialCol]}, Final piece: ${boardState[finalRow][finalCol]}`);
     if (boardState[initialRow][initialCol] >= 'A' && boardState[initialRow][initialCol] <= 'Z' && boardState[finalRow][finalCol] >= 'a' && boardState[finalRow][finalCol] <= 'z') {
-        if (boardState[initialRow][initialRow] != "p") {
+        if (boardState[initialRow][initialCol] != "P") {
             console.log("White eliminates Black");
             return 1;
         }
-        // else if (boardState[initialRow][initialCol] == "p"&& (finalRow-initialRow==1&&(Math.abs(finalCol-initialCol)==1))){
-        //     return 1;            
-        // }
+        else if (boardState[initialRow][initialCol] == "P"&& (finalRow-initialRow==-1*flippedDrn)&&(Math.abs(finalCol-initialCol)==1)){
+            return 1;            
+        }
     }
     else if (boardState[initialRow][initialCol] >= 'a' && boardState[initialRow][initialCol] <= 'z' && boardState[finalRow][finalCol] >= 'A' && boardState[finalRow][finalCol] <= 'Z') {
-        if (boardState[finalRow][finalCol] != "P") {
+        if (boardState[finalRow][finalCol] != "p") {
             console.log("Black eliminates White");
             return 1;
         }
-        //pawn side elimination logic
+        else if (boardState[initialRow][initialCol] == "p"&& (finalRow-initialRow==1*flippedDrn)&&(Math.abs(finalCol-initialCol)==1)){
+            return 1;            
+        }
     }
     console.log("No elimination");
     return 0;
@@ -216,6 +244,8 @@ function resetBoard() {
         ["R", "N", "B", "Q", "K", "B", "N", "R"]
     ];
     renderBoard();
+    whitemove = true;
+    blackmove = false;
 }
 
 function flipBoard() {
@@ -334,12 +364,6 @@ function renderBoard() {
             }
             else if (boardState[i - 1][j - 1] == "k") {
                 cell.textContent = "♚";
-                const tempcell = document.getElementById(`${i}${j}`);
-                tempcell.classList.add('black-piece')
-                tempcell.classList.remove('white-piece');
-            }
-            else if (boardState[i - 1][j - 1] == "p") {
-                cell.textContent = "♟";
                 const tempcell = document.getElementById(`${i}${j}`);
                 tempcell.classList.add('black-piece')
                 tempcell.classList.remove('white-piece');
